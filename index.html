@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đón Chào Năm Mới</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #ffc0cb; /* Hồng tình yêu */
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        #welcomeContainer {
+            max-width: 80%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: hsl(0, 0%, 100%);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        #welcomeText {
+            font-size: 2em;
+            color: #3498db;
+            animation: bounce 1s ease-in-out infinite alternate;
+        }
+
+        #heartContainer {
+            margin-top: 20px;
+            animation: heartbeat 1s ease-in-out infinite alternate;
+        }
+
+        #bottomImage {
+            margin-top: 20px;
+            max-width: 100%; /* Đảm bảo hình ảnh không vượt quá chiều rộng của màn hình */
+            height: auto; /* Giữ tỷ lệ khung hình */
+        }
+
+        #bottomImage img {
+            width: 100%; /* Đảm bảo ảnh GIF rộng bằng chiều rộng của phần tử cha (#bottomImage) */
+            height: auto; /* Giữ tỷ lệ khung hình */
+        }
+
+        #happyNewYear,
+        #happyNewYear2 {
+            color: #ccbf2e; /* Xanh */
+            font-size: 1.5em;
+            margin-top: 20px;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes heartbeat {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.2);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="fireworks"></canvas>
+
+    <div id="welcomeContainer">
+        <h1 id="welcomeText">Chúc mừng năm mới 2024!</h1>
+        <div id="heartContainer"></div>
+        <div id="bottomImage">
+            <img src="https://media.giphy.com/media/KztT2c4u8mYYUiMKdJ/giphy.gif" alt="Ảnh dưới cùng">
+        </div>
+        <div id="happyNewYear">Năm mới bé Mai Mèo càng lớn, càng xinh, càng học giỏi!</div>
+        <div id="happyNewYear2">Tết đến có nhiều lì xì nha (*)_(*)</div>
+    </div>
+
+    <script>
+        var canvas = document.getElementById("fireworks");
+        var ctx = canvas.getContext("2d");
+
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function Firework() {
+            this.x = Math.random() * canvas.width;
+            this.y = canvas.height;
+            this.sx = random(-2, 2);
+            this.sy = random(-12, -8);
+            this.color = "hsl(" + random(0, 360) + ", 100%, 50%)";
+            this.radius = random(2, 4);
+            this.life = true;
+        }
+
+        Firework.prototype.update = function () {
+            this.x += this.sx;
+            this.y += this.sy;
+            this.sy += 0.2;
+
+            if (this.radius > 0.2) {
+                this.radius -= 0.1;
+            } else {
+                this.life = false;
+            }
+        };
+
+        Firework.prototype.draw = function () {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        };
+
+        var fireworks = [];
+
+        function createFirework() {
+            var firework = new Firework();
+            fireworks.push(firework);
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            createFirework();
+
+            for (var i = 0; i < fireworks.length; i++) {
+                fireworks[i].update();
+                fireworks[i].draw();
+
+                if (!fireworks[i].life) {
+                    fireworks.splice(i, 1);
+                    i--;
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+
+</body>
+
+</html>
